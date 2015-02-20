@@ -1,0 +1,19 @@
+{
+    "appKeys": {},
+    "capabilities": [
+        ""
+    ],
+    "companyName": "advancedversion@gmail.com",
+    "longName": "PPT-RaaS",
+    "projectType": "native",
+    "resources": {
+        "media": []
+    },
+    "shortName": "PPT-RaaS",
+    "uuid": "727fa59a-d549-4546-b1e8-a9bc88060bb1",
+    "versionCode": 1,
+    "versionLabel": "1.0",
+    "watchapp": {
+        "watchface": false
+    }
+}

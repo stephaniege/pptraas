@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Pair</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    {% load staticfiles %}
+    <!-- Loading Pair CSS-->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/pair.css' %}" />
+    <!-- Loading Bootstrap -->
+    <form action="/raas/join/" method="post">
+      {% csrf_token %}
+      {{ form }}
+      <input type="submit" value="Submit"/>
+    </form>
+  </head>
+  <body>
+
+  </body>
+</html>

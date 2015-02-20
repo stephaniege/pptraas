@@ -9,6 +9,16 @@
     "resources": {
         "media": [
             {
+                "file": "images/prev_small_bw_scaled.png",
+                "name": "IMAGE_PREV_SMALL_SCALED",
+                "type": "png"
+            },
+            {
+                "file": "images/next_small_bw_scaled.png",
+                "name": "IMAGE_NEXT_SMALL_SCALED",
+                "type": "png"
+            },
+            {
                 "file": "images/prev_small_bw.png",
                 "name": "IMAGE_PREV_SMALL",
                 "type": "png"

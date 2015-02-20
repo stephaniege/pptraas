@@ -104,7 +104,7 @@ static void select_digit_layer(uint pos)
       make_text_layer_white(s_code_digit_layers[i]);
     }
     else
-    {
+     {
       // Otherwise, set its background to black and the color of the text to white.
       make_text_layer_black(s_code_digit_layers[i]);
      }
@@ -136,7 +136,7 @@ static void select_click_handler_cw(ClickRecognizerRef recognizer, void *context
   }
   else
   {
-    // If the last digit was selected, remove the code window.
+    // If the last digit was being edited, remove the code Window.
     window_stack_remove(s_code_window, true);
   }
 }
@@ -164,28 +164,28 @@ static void code_window_unload(Window *window)
 }
 
 static Window *s_navigation_window;
-static BitmapLayer *s_next_layer;
 static GBitmap *s_next_bitmap;
-static BitmapLayer *s_prev_layer;
 static GBitmap *s_prev_bitmap;
+static ActionBarLayer *s_actionbar_layer;
 
 static void init_button_layers(Window *window)
 {
-  s_prev_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_PREV_SMALL);
-  s_prev_layer = bitmap_layer_create(GRect(0, 26, 73, 99));
-  bitmap_layer_set_bitmap(s_prev_layer, s_prev_bitmap);
-  layer_add_child(window_get_root_layer(window), bitmap_layer_get_layer(s_prev_layer));
+  s_prev_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_PREV_SMALL_SCALED);
+  s_next_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_NEXT_SMALL_SCALED);
   
-  s_next_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_NEXT_SMALL);
-  s_next_layer = bitmap_layer_create(GRect(73, 26, 73, 99));
-  bitmap_layer_set_bitmap(s_next_layer, s_next_bitmap);
-  layer_add_child(window_get_root_layer(window), bitmap_layer_get_layer(s_next_layer));
+  s_actionbar_layer = action_bar_layer_create();
+  action_bar_layer_add_to_window(s_actionbar_layer, window);
+  action_bar_layer_set_background_color(s_actionbar_layer, GColorBlack);
+  action_bar_layer_set_icon(s_actionbar_layer, BUTTON_ID_UP, s_next_bitmap);
+  action_bar_layer_set_icon(s_actionbar_layer, BUTTON_ID_DOWN, s_prev_bitmap);
+  layer_add_child(window_get_root_layer(window), (Layer *)s_actionbar_layer);
 }
 
 static void destroy_button_layers(Window *window)
 {
-  bitmap_layer_destroy(s_prev_layer);
-  bitmap_layer_destroy(s_next_layer);
+  gbitmap_destroy(s_prev_bitmap);
+  gbitmap_destroy(s_next_bitmap);
+  action_bar_layer_destroy(s_actionbar_layer);
 }
 
 static void navigation_window_load(Window *window)

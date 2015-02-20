@@ -172,12 +172,12 @@ static GBitmap *s_prev_bitmap;
 static void init_button_layers(Window *window)
 {
   s_prev_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_PREV_SMALL);
-  s_prev_layer = bitmap_layer_create(GRect(0, 0, 54, 99));
+  s_prev_layer = bitmap_layer_create(GRect(0, 26, 73, 99));
   bitmap_layer_set_bitmap(s_prev_layer, s_prev_bitmap);
   layer_add_child(window_get_root_layer(window), bitmap_layer_get_layer(s_prev_layer));
   
   s_next_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_NEXT_SMALL);
-  s_next_layer = bitmap_layer_create(GRect(73, 0, 54, 99));
+  s_next_layer = bitmap_layer_create(GRect(73, 26, 73, 99));
   bitmap_layer_set_bitmap(s_next_layer, s_next_bitmap);
   layer_add_child(window_get_root_layer(window), bitmap_layer_get_layer(s_next_layer));
 }

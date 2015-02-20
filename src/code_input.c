@@ -21,13 +21,17 @@ static void destroy_ui(void) {
 }
 // END AUTO-GENERATED UI CODE
 
+static void handle_window_load(Window* window) {
+  initialise_ui();
+}
+
 static void handle_window_unload(Window* window) {
   destroy_ui();
 }
 
 void show_code_input(void) {
-  initialise_ui();
   window_set_window_handlers(s_window, (WindowHandlers) {
+    .load = handle_window_load,
     .unload = handle_window_unload,
   });
   window_stack_push(s_window, true);

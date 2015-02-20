@@ -1,5 +1,12 @@
 #include <pebble.h>
 
+#define KEY_PAIRING_CODE 0
+#define KEY_PAIRING_STATUS 1
+#define KEY_NEXT 2
+#define KEY_NEXT_STATUS 3
+#define KEY_PREV 4
+#define KEY_PREV_STATUS 5
+
 static Window *s_code_window;
 static TextLayer *s_enter_code_layer;
 static TextLayer *s_code_digit_layers[4];
@@ -198,6 +205,22 @@ static void navigation_window_unload(Window *window)
   destroy_button_layers(window);
 }
 
+static void inbox_received_callback(DictionaryIterator *iterator, void *context) {
+
+}
+
+static void inbox_dropped_callback(AppMessageResult reason, void *context) {
+  APP_LOG(APP_LOG_LEVEL_ERROR, "Message dropped!");
+}
+
+static void outbox_failed_callback(DictionaryIterator *iterator, AppMessageResult reason, void *context) {
+  APP_LOG(APP_LOG_LEVEL_ERROR, "Outbox send failed!");
+}
+
+static void outbox_sent_callback(DictionaryIterator *iterator, void *context) {
+  APP_LOG(APP_LOG_LEVEL_INFO, "Outbox send success!");
+}
+
 static void init()
 {
   // Create main Window element to enter the code and assign to pointer.
@@ -228,6 +251,15 @@ static void init()
   window_stack_push(s_navigation_window, true);
   // Show the code Window on the watch, with `animated` set to `true`.
   window_stack_push(s_code_window, true);
+  
+  // Register callbacks.
+  app_message_register_inbox_received(inbox_received_callback);
+  app_message_register_inbox_dropped(inbox_dropped_callback);
+  app_message_register_outbox_failed(outbox_failed_callback);
+  app_message_register_outbox_sent(outbox_sent_callback);
+  
+  // Open AppMessage.
+  app_message_open(app_message_inbox_size_maximum(), app_message_outbox_size_maximum());
 }
 
 static void deinit()

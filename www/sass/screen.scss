@@ -1,0 +1,139 @@
+/* Welcome to Compass.
+ * In this file you should write your main styles. (or centralize your imports)
+ * Import this file using the following HTML or equivalent:
+ * <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css" /> */
+
+@import "compass/reset";
+@import "compass/css3/transition";
+@import "compass/css3/animation";
+
+$color_red: #ff0033;
+
+
+body {
+	background: black;
+	text-align: center;
+
+	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+body, a {
+	color: $color_red;
+}
+
+ul.nolist, ul.nolist li {
+	margin: 0;
+	list-style: none;
+	padding: 0;
+}
+
+ul#slide_controls_sidebyside {
+
+	li {
+		float: left;
+		width: 50%;
+	}
+
+	a {
+		display: block;
+		line-height: 90vh;
+
+		img {
+			width: 50%;
+			vertical-align: middle;
+		}
+	}
+}
+
+#slide_controls_bottom {
+	height: 10vh;
+
+	img {
+		height: 5vh;
+	}
+}
+
+ul#proto_index {
+	margin: 1em 0;
+	position: absolute;
+	top: 33%;
+	text-align: center;
+	width: 100%;
+}
+
+
+header {
+	color: white;
+	height: 20vh;
+	line-height: 20vh;
+	position: absolute;
+	top: 0;
+	width: 100%;
+}
+
+// .slide_button {
+// 	opacity: 0.7;
+
+// 	&.active, &:active {
+// 		@include animation-name(pulse);
+// 		@include animation-duration(.5s);
+// 	}
+// }
+
+#big_ol_play_button {
+	line-height: 100vh;
+
+	img {
+		width: 61.8%;
+		vertical-align: middle;
+	}
+}
+
+#pairing_pin {
+	position: absolute;
+	top: 20vh;
+	width: 100vw;
+
+	input.remote_code {
+		background: transparent;
+		border: 1px solid #333;
+		color: $color_red;
+		font-size: 20vw;
+		margin: 0;
+		padding: 0;
+		text-align: center;
+		width: 20vw;
+
+		-moz-box-sizing: border-box;
+	    -webkit-box-sizing: border-box;
+	    box-sizing: border-box;
+	}
+}
+
+.slide_gestures_container {
+	height: 100vh;
+	left: 0;
+	position: absolute;
+	//pointer-events: none;
+	top: 0;
+	width: 100vw;
+}
+
+#event {
+	color: white;
+	font-style: italic;
+}
+
+@include keyframes(pulse) {
+	0% {
+		opacity: 0.7;
+	}
+
+	50% {
+		opacity: 1;
+	}
+
+	100% {
+		opacity: 0.7;
+	}
+}

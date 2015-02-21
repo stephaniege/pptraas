@@ -73,8 +73,12 @@ def join_channel(request):
             return HttpResponseRedirect('/raas/buttons/') # redirect to buttons page -> when we redirect to buttons page, we know we are trying to connect to a valid channel. on the buttons page, we can then include the js for connecting to the pusher
     else:
         form = ChannelForm()
-    return render(request, "derp.html", {'form': form})
+    return render(request, "pair.html", {'form': form})
 
 def buttons(request):
-    template = loader.get_template('buttons.html')
+    template = loader.get_template('next_prev.html')
+    return HttpResponse(template.render(RequestContext(request, {})))
+
+def index(request):
+    template = loader.get_template('index.html')
     return HttpResponse(template.render(RequestContext(request, {})))

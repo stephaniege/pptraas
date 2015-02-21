@@ -30,6 +30,7 @@ def request_channel(request):
     channels[get_client_ip(request)] = generated_channel # add this generated channel to channels
     return JsonResponse({'channel':str(generated_channel)})
 
+@csrf_exempt
 def validate_connection(request):
     if request.method == 'POST':
         response = json.loads(request.body) #TODO: does this actually work lol

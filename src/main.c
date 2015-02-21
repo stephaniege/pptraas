@@ -174,6 +174,56 @@ static Window *s_navigation_window;
 static GBitmap *s_next_bitmap;
 static GBitmap *s_prev_bitmap;
 static ActionBarLayer *s_actionbar_layer;
+static TextLayer *s_test_layer;
+
+static void send_next_request()
+{
+  text_layer_set_text(s_test_layer, "Next slide.");
+  
+  // Begin dictionary.
+  DictionaryIterator *iter;
+  app_message_outbox_begin(&iter);
+
+  // Add a key-value pair.
+  dict_write_uint8(iter, KEY_NEXT, 0);
+
+  // Send the message!
+  app_message_outbox_send();
+  APP_LOG(APP_LOG_LEVEL_INFO, "Sent a request to go to the next slide!");
+}
+
+static void up_click_handler_nw(ClickRecognizerRef recognizer, void *context)
+{
+  send_next_request();
+}
+
+static void send_prev_request()
+{
+  text_layer_set_text(s_test_layer, "Previous slide.");
+  
+  // Begin dictionary.
+  DictionaryIterator *iter;
+  app_message_outbox_begin(&iter);
+
+  // Add a key-value pair.
+  dict_write_uint8(iter, KEY_PREV, 0);
+
+  // Send the message!
+  app_message_outbox_send();
+  APP_LOG(APP_LOG_LEVEL_INFO, "Sent a request to go to the previous slide!");
+}
+
+static void down_click_handler_nw(ClickRecognizerRef recognizer, void *context)
+{
+  send_prev_request();
+}
+
+static void click_config_provider_nw(void *context)
+{
+  // Register the ClickHandlers.
+  window_single_click_subscribe(BUTTON_ID_UP, up_click_handler_nw);
+  window_single_click_subscribe(BUTTON_ID_DOWN, down_click_handler_nw);
+}
 
 static void init_button_layers(Window *window)
 {
@@ -186,6 +236,21 @@ static void init_button_layers(Window *window)
   action_bar_layer_set_icon(s_actionbar_layer, BUTTON_ID_UP, s_next_bitmap);
   action_bar_layer_set_icon(s_actionbar_layer, BUTTON_ID_DOWN, s_prev_bitmap);
   layer_add_child(window_get_root_layer(window), (Layer *)s_actionbar_layer);
+  
+  // Add configuration provider to the action bar.
+  action_bar_layer_set_click_config_provider(s_actionbar_layer, click_config_provider_nw);
+  
+  // Add test text layer.
+  s_test_layer = text_layer_create(GRect(0, 20, 120, 30));
+  text_layer_set_text_color(s_test_layer, GColorBlack);
+  text_layer_set_text(s_test_layer, "No button pressed.");
+  text_layer_set_overflow_mode(s_test_layer, GTextOverflowModeWordWrap);
+
+  text_layer_set_font(s_test_layer, fonts_get_system_font(FONT_KEY_GOTHIC_18));
+  text_layer_set_text_alignment(s_test_layer, GTextAlignmentCenter);
+    
+  // Add it as a child layer to the Window's root layer.
+  layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_test_layer));
 }
 
 static void destroy_button_layers(Window *window)
@@ -193,6 +258,7 @@ static void destroy_button_layers(Window *window)
   gbitmap_destroy(s_prev_bitmap);
   gbitmap_destroy(s_next_bitmap);
   action_bar_layer_destroy(s_actionbar_layer);
+  text_layer_destroy(s_test_layer);
 }
 
 static void navigation_window_load(Window *window)
@@ -223,6 +289,15 @@ static void outbox_sent_callback(DictionaryIterator *iterator, void *context) {
 
 static void init()
 {
+  // Register callbacks.
+  app_message_register_inbox_received(inbox_received_callback);
+  app_message_register_inbox_dropped(inbox_dropped_callback);
+  app_message_register_outbox_failed(outbox_failed_callback);
+  app_message_register_outbox_sent(outbox_sent_callback);
+  
+  // Open AppMessage.
+  app_message_open(app_message_inbox_size_maximum(), app_message_outbox_size_maximum());
+  
   // Create main Window element to enter the code and assign to pointer.
   s_code_window = window_create();
 
@@ -244,22 +319,10 @@ static void init()
     .unload = navigation_window_unload
   });
   
-  // Add configuration provider to the navigation Window.
-  // window_set_click_config_provider(s_code_window, click_config_provider_cw);
-  
   // Show the navigation Window on the watch, with `animated` set to `true`.
   window_stack_push(s_navigation_window, true);
   // Show the code Window on the watch, with `animated` set to `true`.
   window_stack_push(s_code_window, true);
-  
-  // Register callbacks.
-  app_message_register_inbox_received(inbox_received_callback);
-  app_message_register_inbox_dropped(inbox_dropped_callback);
-  app_message_register_outbox_failed(outbox_failed_callback);
-  app_message_register_outbox_sent(outbox_sent_callback);
-  
-  // Open AppMessage.
-  app_message_open(app_message_inbox_size_maximum(), app_message_outbox_size_maximum());
 }
 
 static void deinit()

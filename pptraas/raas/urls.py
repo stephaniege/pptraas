@@ -8,5 +8,6 @@ urlpatterns = patterns('',
            url(r'^join/$', views.join_channel),
            url(r'^buttons/$', views.buttons),
            url(r'^validate/$', views.validate_connection),
+           url(r'^next/$', views.next_slide),
+           url(r'^previous/$', views.previous_slide),
            )
-

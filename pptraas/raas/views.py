@@ -4,6 +4,7 @@ import pusher
 from django.template import RequestContext, loader
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponseRedirect, HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 from random import randint
 from sets import Set
 from models import ChannelForm

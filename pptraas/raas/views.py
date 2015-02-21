@@ -28,15 +28,15 @@ def request_channel(request):
     generated_channel = randint(1000, 4000) # do we want to handle 4 digit numbers that start w/0
     while generated_channel in channels.values():
         generated_channel = randint(1000, 4000)
-    channels[get_client_ip(request)] = generated_channel # add this generated channel to channels
-    return JsonResponse({'channel':str(generated_channel)})
+    channels[get_client_ip(request)] = str(generated_channel) # add this generated channel to channels
+    return JsonResponse({'channel':generated_channel})
 
 @csrf_exempt
 def validate_connection(request):
     if request.method == 'POST':
         response = json.loads(request.body) #TODO: does this actually work lol
         if u'code1' and u'code2' and u'code3' and u'code4' in response:
-            code = str(response[u'code1']) + str(response[u'code2']) + str(response[u'code3']) + str(response[u'code4']) 
+            code = str(response[u'code1']) + str(response[u'code2']) + str(response[u'code3']) + str(response[u'code4'])
             if code in channels.values(): # this channel must be open to a desktop presentation.
                 channels[get_client_ip(request)] = code
                 return JsonResponse({'channel':code})

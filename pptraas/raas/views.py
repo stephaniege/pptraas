@@ -84,3 +84,7 @@ def buttons(request):
 def index(request):
     template = loader.get_template('index.html')
     return HttpResponse(template.render(RequestContext(request, {})))
+
+def mock_task_pane(request):
+    template = loader.get_template('mock_task_pane.html')
+    return HttpResponse(template.render(RequestContext(request, {})))

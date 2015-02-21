@@ -10,4 +10,7 @@ urlpatterns = patterns('',
            url(r'^validate/$', views.validate_connection),
            url(r'^next/$', views.next_slide),
            url(r'^previous/$', views.previous_slide),
+           url(r'^$', views.index),
+           url(r'^pair/$', views.join_channel),
+           url(r'^mock/$', views.mock_task_pane),           
            )

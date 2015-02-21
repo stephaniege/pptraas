@@ -1,5 +1,15 @@
 {
-    "appKeys": {},
+    "appKeys": {
+        "KEY_NEXT": 5,
+        "KEY_NEXT_STATUS": 6,
+        "KEY_PAIRING_CODE_DIGIT1": 0,
+        "KEY_PAIRING_CODE_DIGIT2": 1,
+        "KEY_PAIRING_CODE_DIGIT3": 2,
+        "KEY_PAIRING_CODE_DIGIT4": 3,
+        "KEY_PAIRING_STATUS": 4,
+        "KEY_PREV": 7,
+        "KEY_PREV_STATUS": 8
+    },
     "capabilities": [
         ""
     ],

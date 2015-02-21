@@ -1,11 +1,14 @@
 #include <pebble.h>
 
-#define KEY_PAIRING_CODE 0
-#define KEY_PAIRING_STATUS 1
-#define KEY_NEXT 2
-#define KEY_NEXT_STATUS 3
-#define KEY_PREV 4
-#define KEY_PREV_STATUS 5
+#define KEY_PAIRING_CODE_DIGIT1 0
+#define KEY_PAIRING_CODE_DIGIT2 1
+#define KEY_PAIRING_CODE_DIGIT3 2
+#define KEY_PAIRING_CODE_DIGIT4 3
+#define KEY_PAIRING_STATUS 4
+#define KEY_NEXT 5
+#define KEY_NEXT_STATUS 6
+#define KEY_PREV 7
+#define KEY_PREV_STATUS 8
 
 static Window *s_code_window;
 static TextLayer *s_enter_code_layer;
@@ -24,14 +27,6 @@ static uint get_next_numeral_pos(uint i)
 static uint get_prev_numeral_pos(uint i)
 {
   return (i == 0) ? 9 : (i - 1);  
-}
-
-static uint get_complete_code()
-{
-  return ((s_code_digits[0] * 1000) +
-          (s_code_digits[1] * 100) +
-          (s_code_digits[2] * 10) +
-          s_code_digits[3]);
 }
 
 static void init_digit_layers(Window *window)
@@ -55,9 +50,6 @@ static void init_digit_layers(Window *window)
     // Add it as a child layer to the Window's root layer.
     layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_code_digit_layers[i]));
   }
-  
-  // TODO: Remove once implemented.
-  get_complete_code();
 }
 
 static void init_text_layers_cw(Window *window)
@@ -118,6 +110,23 @@ static void select_digit_layer(uint pos)
   }
 }
 
+static void send_code()
+{
+  // Begin dictionary.
+  DictionaryIterator *iter;
+  app_message_outbox_begin(&iter);
+
+  // Add key-value pairs for each of the digits.
+  dict_write_uint8(iter, KEY_PAIRING_CODE_DIGIT4, s_code_digits[3]);
+  dict_write_uint8(iter, KEY_PAIRING_CODE_DIGIT3, s_code_digits[2]);
+  dict_write_uint8(iter, KEY_PAIRING_CODE_DIGIT2, s_code_digits[1]);
+  dict_write_uint8(iter, KEY_PAIRING_CODE_DIGIT1, s_code_digits[0]);
+
+  // Send the message!
+  app_message_outbox_send();
+  APP_LOG(APP_LOG_LEVEL_INFO, "Sent the pairing code!");
+}
+
 static void up_click_handler_cw(ClickRecognizerRef recognizer, void *context)
 {
   s_code_digits[current_digit_pos] = get_next_numeral_pos(s_code_digits[current_digit_pos]);
@@ -143,6 +152,8 @@ static void select_click_handler_cw(ClickRecognizerRef recognizer, void *context
   }
   else
   {
+    // If the last digit was being edited,send the code.
+    send_code();
     // If the last digit was being edited, remove the code Window.
     window_stack_remove(s_code_window, true);
   }

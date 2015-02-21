@@ -15,7 +15,7 @@
     var pusher = new Pusher('9e5d1eb58fe24c7db157');
 
     $.get( "/raas/request/", function( data ) {
-        var channel = str(data["channel"]);
+        var channel = String(data["channel"]);
         $("#channel").text(channel);
       var channel = pusher.subscribe(channel);
       channel.bind('my_event', function(data) {

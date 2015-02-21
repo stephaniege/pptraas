@@ -47,7 +47,7 @@ def send_message_to_pusher(request, message):
             app_id='107202',
             key='9e5d1eb48fe24c7db157',
             secret='4ea7611fd7e5b0a20cb6'
-            )
+    )
     channel = channels[get_client_ip(request)]
     p[channel].trigger('my_event', {'message': message})
     return JsonResponse({'channel':channel})

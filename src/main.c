@@ -1,5 +1,8 @@
 #include <pebble.h>
 
+#define FALSE 0
+#define TRUE 1
+
 #define KEY_PAIRING_CODE_DIGIT1 0
 #define KEY_PAIRING_CODE_DIGIT2 1
 #define KEY_PAIRING_CODE_DIGIT3 2
@@ -252,7 +255,7 @@ static void init_button_layers(Window *window)
   action_bar_layer_set_click_config_provider(s_actionbar_layer, click_config_provider_nw);
   
   // Add test text layer.
-  s_test_layer = text_layer_create(GRect(0, 20, 120, 30));
+  s_test_layer = text_layer_create(GRect(0, 20, 120, 100));
   text_layer_set_text_color(s_test_layer, GColorBlack);
   text_layer_set_text(s_test_layer, "No button pressed.");
   text_layer_set_overflow_mode(s_test_layer, GTextOverflowModeWordWrap);
@@ -283,7 +286,7 @@ static void navigation_window_unload(Window *window)
 }
 
 static void inbox_received_callback(DictionaryIterator *iterator, void *context) {
-
+  APP_LOG(APP_LOG_LEVEL_INFO, "Message received!");
 }
 
 static void inbox_dropped_callback(AppMessageResult reason, void *context) {
@@ -296,6 +299,22 @@ static void outbox_failed_callback(DictionaryIterator *iterator, AppMessageResul
 
 static void outbox_sent_callback(DictionaryIterator *iterator, void *context) {
   APP_LOG(APP_LOG_LEVEL_INFO, "Outbox send success!");
+}
+
+static void data_handler(AccelData *data, uint32_t num_samples) {
+  // Long-lived buffer.
+  static char s_buffer[128];
+
+  // Compose string of all data
+  snprintf(s_buffer, sizeof(s_buffer), 
+    "N X,Y,Z\n0 %d,%d,%d\n1 %d,%d,%d\n2 %d,%d,%d", 
+    data[0].x, data[0].y, data[0].z, 
+    data[1].x, data[1].y, data[1].z, 
+    data[2].x, data[2].y, data[2].z
+  );
+
+  // Show the data.
+  text_layer_set_text(s_test_layer, s_buffer);
 }
 
 static void init()
@@ -334,6 +353,13 @@ static void init()
   window_stack_push(s_navigation_window, true);
   // Show the code Window on the watch, with `animated` set to `true`.
   window_stack_push(s_code_window, true);
+  
+  // Subscribe to the accelerometer data service.
+  uint32_t num_samples = 3;
+  accel_data_service_subscribe(num_samples, data_handler);
+  
+  // Choose update rate
+  accel_service_set_sampling_rate(ACCEL_SAMPLING_10HZ);
 }
 
 static void deinit()

@@ -12,6 +12,17 @@ var xhrRequest = function(url, type, callback, params) {
   else { xhr.send(); }
 };
 
+function sendToPebble(dictionary) {
+  Pebble.sendAppMessage(dictionary,
+                        function(e) {
+                          console.log("Dictionary sent to Pebble successfully!");
+                        },
+                        function(e) {
+                          console.log("Error sending dictionary to Pebble!");
+                        }
+                       );
+}
+
 function sendPairingRequest(digit1, digit2, digit3, digit4) {
   var url = "http://pptraas.herokuapp.com/raas/validate/";
   console.log("Sending pairing request...");
@@ -21,10 +32,16 @@ function sendPairingRequest(digit1, digit2, digit3, digit4) {
       try {
         // responseText contains a JSON object.
         var response = JSON.parse(responseText);
-        return response.channel !== "0000";
+        var result = response.channel.valueOf() !== "0000".valueOf();
+        
+        // Prepare dictionary to send back to the Pebble app.
+        var dictionary = {
+          "KEY_PAIRING_STATUS": (result ? 1 : 0)
+        };
+        console.log("Sending dictionary: " + JSON.stringify(dictionary));
+        sendToPebble(dictionary);
       } catch (e) {
         console.log("Output is incorrectly formatted.");
-        return false;
       }
     },
     {
@@ -93,12 +110,7 @@ Pebble.addEventListener('appmessage',
       var digit2 = e.payload.KEY_PAIRING_CODE_DIGIT2;
       var digit3 = e.payload.KEY_PAIRING_CODE_DIGIT3;
       var digit4 = e.payload.KEY_PAIRING_CODE_DIGIT4;
-      var pairingRequestResult = sendPairingRequest(digit1, digit2, digit3, digit4);
-      if (pairingRequestResult === true) {
-        console.log("Pairing was successful");
-      } else {
-        console.log("Pairing was unsuccessful.");
-      }
+      sendPairingRequest(digit1, digit2, digit3, digit4);
     } else if ("KEY_NEXT" in e.payload) {
       var nextSlideRequestResult = sendNextSlideRequest();
       if (nextSlideRequestResult) {

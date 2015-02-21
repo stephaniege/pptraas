@@ -45,7 +45,7 @@ def validate_connection(request):
 def send_message_to_pusher(request, message):
     p = pusher.Pusher(
             app_id='107202',
-            key='9e5d1eb48fe24c7db157',
+            key='9e5d1eb58fe24c7db157',
             secret='4ea7611fd7e5b0a20cb6'
     )
     channel = channels[get_client_ip(request)]

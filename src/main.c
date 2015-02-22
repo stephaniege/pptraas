@@ -1,4 +1,5 @@
 #include <pebble.h>
+#include "accelerate.h"
 
 #define FALSE 0
 #define TRUE 1
@@ -302,7 +303,8 @@ static void navigation_window_unload(Window *window)
   destroy_status_layer(window);
 }
 
-static void inbox_received_callback(DictionaryIterator *iterator, void *context) {
+static void inbox_received_callback(DictionaryIterator *iterator, void *context)
+{
   APP_LOG(APP_LOG_LEVEL_INFO, "Message received!");
   
   // Read first item from the dictionary.
@@ -369,19 +371,23 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
   }
 }
 
-static void inbox_dropped_callback(AppMessageResult reason, void *context) {
+static void inbox_dropped_callback(AppMessageResult reason, void *context)
+{
   APP_LOG(APP_LOG_LEVEL_ERROR, "Message dropped!");
 }
 
-static void outbox_failed_callback(DictionaryIterator *iterator, AppMessageResult reason, void *context) {
+static void outbox_failed_callback(DictionaryIterator *iterator, AppMessageResult reason, void *context)
+{
   APP_LOG(APP_LOG_LEVEL_ERROR, "Outbox send failed!");
 }
 
-static void outbox_sent_callback(DictionaryIterator *iterator, void *context) {
+static void outbox_sent_callback(DictionaryIterator *iterator, void *context)
+{
   APP_LOG(APP_LOG_LEVEL_INFO, "Outbox send success!");
 }
 
-static void data_handler(AccelData *data, uint32_t num_samples) {
+static void data_handler(AccelData *data, uint32_t num_samples)
+{
   // Long-lived buffer.
   static char s_buffer[128];
 
@@ -438,8 +444,11 @@ static void init()
   uint32_t num_samples = 3;
   accel_data_service_subscribe(num_samples, data_handler);
   
-  // Choose update rate
+  // Choose update rate.
   accel_service_set_sampling_rate(ACCEL_SAMPLING_10HZ);
+  
+  IntNode *test = init_int_linked_list((uint)num_samples);
+  destroy_int_linked_list(test);
 }
 
 static void deinit()

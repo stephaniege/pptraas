@@ -33,7 +33,6 @@ function sendPairingRequest(digit1, digit2, digit3, digit4) {
         // responseText contains a JSON object.
         var response = JSON.parse(responseText);
         var result = response.channel.valueOf() !== "0000".valueOf();
-        
         // Prepare dictionary to send back to the Pebble app.
         var dictionary = {
           "KEY_PAIRING_STATUS": (result ? 1 : 0)
@@ -42,6 +41,12 @@ function sendPairingRequest(digit1, digit2, digit3, digit4) {
         sendToPebble(dictionary);
       } catch (e) {
         console.log("Output is incorrectly formatted.");
+        // Prepare dictionary to send back to the Pebble app.
+        var dictionary = {
+          "KEY_PAIRING_STATUS": 0
+        };
+        console.log("Sending dictionary: " + JSON.stringify(dictionary));
+        sendToPebble(dictionary);
       }
     },
     {
@@ -62,10 +67,21 @@ function sendNextSlideRequest() {
       try {
         // responseText contains a JSON object.
         var response = JSON.parse(responseText);
-        return response.channel !== "0000";
+        var result = response.channel.valueOf() !== "0000".valueOf();
+        // Prepare dictionary to send back to the Pebble app.
+        var dictionary = {
+          "KEY_NEXT_STATUS": (result ? 1 : 0)
+        };
+        console.log("Sending dictionary: " + JSON.stringify(dictionary));
+        sendToPebble(dictionary);
       } catch (e) {
         console.log("Output is incorrectly formatted.");
-        return false;
+        // Prepare dictionary to send back to the Pebble app.
+        var dictionary = {
+          "KEY_NEXT_STATUS": 0
+        };
+        console.log("Sending dictionary: " + JSON.stringify(dictionary));
+        sendToPebble(dictionary);
       }
     },
     { }
@@ -81,10 +97,21 @@ function sendPrevSlideRequest() {
       try {
         // responseText contains a JSON object.
         var response = JSON.parse(responseText);
-        return response.channel !== "0000";
+        var result = response.channel.valueOf() !== "0000".valueOf();
+        // Prepare dictionary to send back to the Pebble app.
+        var dictionary = {
+          "KEY_PREV_STATUS": (result ? 1 : 0)
+        };
+        console.log("Sending dictionary: " + JSON.stringify(dictionary));
+        sendToPebble(dictionary);
       } catch (e) {
         console.log("Output is incorrectly formatted.");
-        return false;
+        // Prepare dictionary to send back to the Pebble app.
+        var dictionary = {
+          "KEY_PREV_STATUS": 0
+        };
+        console.log("Sending dictionary: " + JSON.stringify(dictionary));
+        sendToPebble(dictionary);
       }
     },
     { }

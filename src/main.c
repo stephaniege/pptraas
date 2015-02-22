@@ -188,11 +188,11 @@ static Window *s_navigation_window;
 static GBitmap *s_next_bitmap;
 static GBitmap *s_prev_bitmap;
 static ActionBarLayer *s_actionbar_layer;
-static TextLayer *s_test_layer;
+static TextLayer *s_status_layer;
 
 static void send_next_request()
 {
-  text_layer_set_text(s_test_layer, "Next slide.");
+  text_layer_set_text(s_status_layer, "Next slide.");
   
   // Begin dictionary.
   DictionaryIterator *iter;
@@ -213,7 +213,7 @@ static void up_click_handler_nw(ClickRecognizerRef recognizer, void *context)
 
 static void send_prev_request()
 {
-  text_layer_set_text(s_test_layer, "Previous slide.");
+  text_layer_set_text(s_status_layer, "Previous slide.");
   
   // Begin dictionary.
   DictionaryIterator *iter;
@@ -253,18 +253,20 @@ static void init_button_layers(Window *window)
   
   // Add configuration provider to the action bar.
   action_bar_layer_set_click_config_provider(s_actionbar_layer, click_config_provider_nw);
-  
-  // Add test text layer.
-  s_test_layer = text_layer_create(GRect(0, 20, 120, 100));
-  text_layer_set_text_color(s_test_layer, GColorBlack);
-  text_layer_set_text(s_test_layer, "No button pressed.");
-  text_layer_set_overflow_mode(s_test_layer, GTextOverflowModeWordWrap);
+}
 
-  text_layer_set_font(s_test_layer, fonts_get_system_font(FONT_KEY_GOTHIC_18));
-  text_layer_set_text_alignment(s_test_layer, GTextAlignmentCenter);
+static void init_status_layer(Window *window)
+{
+  s_status_layer = text_layer_create(GRect(0, 20, 120, 100));
+  text_layer_set_text_color(s_status_layer, GColorBlack);
+  text_layer_set_text(s_status_layer, "No request sent.");
+  text_layer_set_overflow_mode(s_status_layer, GTextOverflowModeWordWrap);
+
+  text_layer_set_font(s_status_layer, fonts_get_system_font(FONT_KEY_GOTHIC_18));
+  text_layer_set_text_alignment(s_status_layer, GTextAlignmentCenter);
     
   // Add it as a child layer to the Window's root layer.
-  layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_test_layer));
+  layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_status_layer));
 }
 
 static void destroy_button_layers(Window *window)
@@ -272,21 +274,75 @@ static void destroy_button_layers(Window *window)
   gbitmap_destroy(s_prev_bitmap);
   gbitmap_destroy(s_next_bitmap);
   action_bar_layer_destroy(s_actionbar_layer);
-  text_layer_destroy(s_test_layer);
+}
+
+static void destroy_status_layer(Window *window)
+{
+  text_layer_destroy(s_status_layer);
 }
 
 static void navigation_window_load(Window *window)
 {
   init_button_layers(window);
+  init_status_layer(window);
 }
 
 static void navigation_window_unload(Window *window)
 {
   destroy_button_layers(window);
+  destroy_status_layer(window);
 }
 
 static void inbox_received_callback(DictionaryIterator *iterator, void *context) {
   APP_LOG(APP_LOG_LEVEL_INFO, "Message received!");
+  
+  // Read first item from the dictionary.
+  Tuple *t = dict_read_first(iterator);
+
+  // For all items...
+  while (t != NULL)
+  {
+    // Which key was received?
+    switch(t->key)
+    {
+      case KEY_PAIRING_STATUS:
+        if ((int)t->value->int32)
+        {
+          APP_LOG(APP_LOG_LEVEL_INFO, "Pairing was successful! :)");
+        }
+        else
+        {
+          APP_LOG(APP_LOG_LEVEL_INFO, "Pairing was unsuccessful! :(");
+        }
+        break;
+      case KEY_NEXT_STATUS:
+        if ((int)t->value->int32)
+        {
+          APP_LOG(APP_LOG_LEVEL_INFO, "Next slide request was successful! :)");
+        }
+        else
+        {
+          APP_LOG(APP_LOG_LEVEL_INFO, "Next slide request was unsuccessful! :(");
+        }
+        break;
+      case KEY_PREV_STATUS:
+        if ((int)t->value->int32)
+        {
+          APP_LOG(APP_LOG_LEVEL_INFO, "Previous slide request was successful! :)");
+        }
+        else
+        {
+          APP_LOG(APP_LOG_LEVEL_INFO, "Previous slide request was unsuccessful! :(");
+        }
+        break;
+      default:
+        APP_LOG(APP_LOG_LEVEL_ERROR, "Key %d not recognized!", (int)t->key);
+        break;
+     }
+
+    // Look for next item in the dictionary.
+    t = dict_read_next(iterator);
+  }
 }
 
 static void inbox_dropped_callback(AppMessageResult reason, void *context) {
@@ -314,7 +370,7 @@ static void data_handler(AccelData *data, uint32_t num_samples) {
   );
 
   // Show the data.
-  text_layer_set_text(s_test_layer, s_buffer);
+  text_layer_set_text(s_status_layer, s_buffer);
 }
 
 static void init()

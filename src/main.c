@@ -155,10 +155,8 @@ static void select_click_handler_cw(ClickRecognizerRef recognizer, void *context
   }
   else
   {
-    // If the last digit was being edited,send the code.
+    // If the last digit was being edited, send the code.
     send_code();
-    // If the last digit was being edited, remove the code Window.
-    window_stack_remove(s_code_window, true);
   }
 }
 
@@ -192,8 +190,6 @@ static TextLayer *s_status_layer;
 
 static void send_next_request()
 {
-  text_layer_set_text(s_status_layer, "Next slide.");
-  
   // Begin dictionary.
   DictionaryIterator *iter;
   app_message_outbox_begin(&iter);
@@ -213,8 +209,6 @@ static void up_click_handler_nw(ClickRecognizerRef recognizer, void *context)
 
 static void send_prev_request()
 {
-  text_layer_set_text(s_status_layer, "Previous slide.");
-  
   // Begin dictionary.
   DictionaryIterator *iter;
   app_message_outbox_begin(&iter);
@@ -309,6 +303,8 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
         if ((int)t->value->int32)
         {
           APP_LOG(APP_LOG_LEVEL_INFO, "Pairing was successful! :)");
+          // If the pairing was successful, remove the code Window.
+          window_stack_remove(s_code_window, true);
         }
         else
         {
@@ -319,20 +315,24 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
         if ((int)t->value->int32)
         {
           APP_LOG(APP_LOG_LEVEL_INFO, "Next slide request was successful! :)");
+          text_layer_set_text(s_status_layer, "Showing next slide.");
         }
         else
         {
           APP_LOG(APP_LOG_LEVEL_INFO, "Next slide request was unsuccessful! :(");
+          text_layer_set_text(s_status_layer, "Unable to show next slide.");
         }
         break;
       case KEY_PREV_STATUS:
         if ((int)t->value->int32)
         {
           APP_LOG(APP_LOG_LEVEL_INFO, "Previous slide request was successful! :)");
+          text_layer_set_text(s_status_layer, "Showing previous slide.");
         }
         else
         {
           APP_LOG(APP_LOG_LEVEL_INFO, "Previous slide request was unsuccessful! :(");
+          text_layer_set_text(s_status_layer, "Unable to show previous slide.");
         }
         break;
       default:

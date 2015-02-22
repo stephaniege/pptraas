@@ -160,12 +160,27 @@ static void select_click_handler_cw(ClickRecognizerRef recognizer, void *context
   }
 }
 
+static void back_click_handler_cw(ClickRecognizerRef recognizer, void *context)
+{
+  if (current_digit_pos != 0)
+  {
+    current_digit_pos--;
+    select_digit_layer(current_digit_pos);
+  }
+  else
+  {
+    // If the first digit was being edited, close the app.
+    window_stack_pop_all(true);
+  }
+}
+
 static void click_config_provider_cw(void *context)
 {
   // Register the ClickHandlers.
   window_single_click_subscribe(BUTTON_ID_UP, up_click_handler_cw);
   window_single_click_subscribe(BUTTON_ID_DOWN, down_click_handler_cw);
   window_single_click_subscribe(BUTTON_ID_SELECT, select_click_handler_cw);
+  window_single_click_subscribe(BUTTON_ID_BACK, back_click_handler_cw);
 }
 
 static void code_window_load(Window *window)

@@ -309,6 +309,15 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
         else
         {
           APP_LOG(APP_LOG_LEVEL_INFO, "Pairing was unsuccessful! :(");
+          // If the pairing was unsuccessful, reset the position of the cursor
+          // and reset all numbers to zero.
+          for (uint i = 0; i < 4; i++)
+          {
+            s_code_digits[i] = 0;
+            text_layer_set_text(s_code_digit_layers[i], s_numerals[s_code_digits[i]]);  
+          }
+          current_digit_pos = 0;
+          select_digit_layer(current_digit_pos);
         }
         break;
       case KEY_NEXT_STATUS:

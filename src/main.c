@@ -1,5 +1,5 @@
 #include <pebble.h>
-#include "accelerate.h"
+#include "gesture.h"
 
 #define FALSE 0
 #define TRUE 1

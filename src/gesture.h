@@ -4,6 +4,7 @@ struct IntNode
 {
   int intData;
   struct IntNode *next;
+  struct IntNode *prev;
 };
 typedef struct IntNode IntNode;
 

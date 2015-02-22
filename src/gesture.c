@@ -1,5 +1,5 @@
 #include <pebble.h>
-#include "accelerate.h"
+#include "gesture.h"
 
 IntNode* init_int_linked_list(uint num)
 {
@@ -12,6 +12,7 @@ IntNode* init_int_linked_list(uint num)
   {
     firstNode->intData = 0;
     firstNode->next = 0;
+    firstNode->prev = 0;
     successful++;
   }
   i++;
@@ -20,10 +21,11 @@ IntNode* init_int_linked_list(uint num)
   while (i < num)
   {
     IntNode* newNode = malloc(sizeof(IntNode));
-    if (newNode != 0 && prevNode != 0)
+    if (newNode != 0)
     {
       newNode->intData = 0;
       newNode->next = 0;
+      newNode->prev = prevNode;
       prevNode->next = newNode;
       prevNode = newNode;
       successful++;

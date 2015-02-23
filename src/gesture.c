@@ -33,9 +33,8 @@ IntNode* init_int_linked_list(uint num)
     i++;
   }
   
-  /* char *infoFormatMsg = "%d integers allocated.";
-  char infoMsg[32];
-  snprintf(infoMsg, 32, infoFormatMsg, successful);
+  /* static char infoMsg[32];
+  snprintf(infoMsg, sizeof(infoMsg), "%d integers allocated.", successful);
   APP_LOG(APP_LOG_LEVEL_INFO, infoMsg); */
   return firstNode;
 }
@@ -51,9 +50,8 @@ void destroy_int_linked_list(IntNode *to_destroy)
     successful++;
   }
   
-  /* char *infoFormatMsg = "%d integers deallocated.";
-  char infoMsg[32];
-  snprintf(infoMsg, 32, infoFormatMsg, successful);
+  /* static char infoMsg[32];
+  snprintf(infoMsg, sizeof(infoMsg), "%d integers deallocated.", successful);
   APP_LOG(APP_LOG_LEVEL_INFO, infoMsg); */
 }
 
@@ -65,7 +63,7 @@ IntNode* get_last_node(IntNode* node)
 
 // Adds a new integer to the linked list.
 // Compensates by removing the first integer from the linked list.
-IntNode* add_to_int_linked_list(IntNode* node, uint16_t data)
+IntNode* add_to_int_linked_list(IntNode* node, int16_t data)
 {
   // Precondition: The linked list has at least one node.
   IntNode* last_node = get_last_node(node);
@@ -119,12 +117,37 @@ void destroy_data_streams()
   destroy_int_linked_list(last_large_change_z);
 }
 
-void add_accel_data_to_streams(AccelData *data)
-{
+void add_accel_data_to_streams(AccelData *data, TextLayer *s_debug_layer)
+{ 
+  // Add the acceleration data to the streams that store the original values.
   for (uint i = 0; i < NUM_SAMPLES; i++)
   {
     accel_data_x = add_to_int_linked_list(accel_data_x, data[i].x);
     accel_data_y = add_to_int_linked_list(accel_data_y, data[i].y);
     accel_data_z = add_to_int_linked_list(accel_data_z, data[i].z);
   }
+  
+  // Find the moving average along each direction, and add that
+  // information to the moving average streams.
+  int16_t last_accel_data_x = data[NUM_SAMPLES - 1].x;
+  int16_t last_accel_data_y = data[NUM_SAMPLES - 1].y;
+  int16_t last_accel_data_z = data[NUM_SAMPLES - 1].z;
+  moving_avg_data_x = add_new_moving_avg(moving_avg_data_x, last_accel_data_x);
+  moving_avg_data_y = add_new_moving_avg(moving_avg_data_y, last_accel_data_y);
+  moving_avg_data_z = add_new_moving_avg(moving_avg_data_z, last_accel_data_z);
+  
+  static char infoMsg[32];
+  snprintf(infoMsg, sizeof(infoMsg),
+           "Moving average: %d, %d, %d",
+          get_last_node(moving_avg_data_x)->data,
+          get_last_node(moving_avg_data_y)->data,
+          get_last_node(moving_avg_data_z)->data);
+  text_layer_set_text(s_debug_layer, infoMsg);
+}
+
+IntNode* add_new_moving_avg(IntNode* stream, int16_t new_data)
+{
+  IntNode* lastNode = get_last_node(stream);
+  int16_t new_moving_avg = (int16_t)((lastNode->data + new_data) / 2);
+  return add_to_int_linked_list(stream, new_moving_avg);
 }

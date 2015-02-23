@@ -406,21 +406,20 @@ static void outbox_sent_callback(DictionaryIterator *iterator, void *context)
 static void data_handler(AccelData *data, uint32_t num_samples)
 {
   // Add the data to the acceleration streams.
-  add_accel_data_to_streams(data);
+  add_accel_data_to_streams(data, s_readings_layer);
   
   // Long-lived buffer.
   static char s_buffer[128];
 
   // Compose string of all data
-  snprintf(s_buffer, sizeof(s_buffer), 
+  /* snprintf(s_buffer, sizeof(s_buffer), 
     "N X,Y,Z\n0 %d,%d,%d\n1 %d,%d,%d\n2 %d,%d,%d", 
     data[NUM_SAMPLES - 3].x, data[NUM_SAMPLES - 3].y, data[NUM_SAMPLES - 3].z, 
     data[NUM_SAMPLES - 2].x, data[NUM_SAMPLES - 2].y, data[NUM_SAMPLES - 2].z, 
     data[NUM_SAMPLES - 1].x, data[NUM_SAMPLES - 1].y, data[NUM_SAMPLES - 1].z
-  );
-
+  ); */
   // Show the data.
-  text_layer_set_text(s_readings_layer, s_buffer);
+  // text_layer_set_text(s_readings_layer, s_buffer);
 }
 
 static void init()

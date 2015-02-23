@@ -10,7 +10,7 @@ static uint gesture_mode = FALSE;
 
 struct IntNode
 {
-  uint16_t data;
+  int16_t data;
   struct IntNode *next;
   struct IntNode *prev;
 };
@@ -26,7 +26,7 @@ typedef struct AccelNode AccelNode;
 IntNode* init_int_linked_list(uint);
 void destroy_int_linked_list(IntNode*);
 IntNode* get_last_node(IntNode*);
-IntNode* add_to_int_linked_list(IntNode*, uint16_t);
+IntNode* add_to_int_linked_list(IntNode*, int16_t);
 
 static IntNode* accel_data_x;
 static IntNode* accel_data_y;
@@ -47,4 +47,5 @@ static IntNode* last_large_change_z;
 void init_data_streams(uint);
 void destroy_data_streams();
 
-void add_accel_data_to_streams(AccelData*);
+void add_accel_data_to_streams(AccelData*, TextLayer*);
+IntNode* add_new_moving_avg(IntNode*, int16_t);

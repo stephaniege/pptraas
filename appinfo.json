@@ -14,7 +14,7 @@
         ""
     ],
     "companyName": "advancedversion@gmail.com",
-    "longName": "PowerPoint Remote as a Service",
+    "longName": "Remotr",
     "projectType": "native",
     "resources": {
         "media": [
@@ -40,7 +40,7 @@
             }
         ]
     },
-    "shortName": "PPT-RaaS",
+    "shortName": "Remotr",
     "uuid": "727fa59a-d549-4546-b1e8-a9bc88060bb1",
     "versionCode": 1,
     "versionLabel": "1.0",

@@ -255,8 +255,8 @@ void check_to_send_next_request()
   IntNode* last_last_large_change_z = get_last_node(last_large_change_z);
   
   if (// abs(last_last_large_change_z->data) > 0 && // NUM_SAMPLES &&
-      last_last_large_change_y->data == 1 && 
-      last_last_large_change_y->prev->data < -GESTURE_LENGTH_THRESHOLD)
+      last_last_large_change_y->data == -1 && 
+      last_last_large_change_y->prev->data > GESTURE_LENGTH_THRESHOLD)
   {
     send_next_request();
   }
@@ -269,8 +269,8 @@ void check_to_send_prev_request()
   IntNode* last_last_large_change_z = get_last_node(last_large_change_z);
   
   if (// abs(last_last_large_change_z->data) > 0 && // NUM_SAMPLES &&
-      last_last_large_change_y->data == -1 && 
-      last_last_large_change_y->prev->data > GESTURE_LENGTH_THRESHOLD)
+      last_last_large_change_y->data == 1 && 
+      last_last_large_change_y->prev->data < -GESTURE_LENGTH_THRESHOLD)
   {
     send_prev_request();
   }

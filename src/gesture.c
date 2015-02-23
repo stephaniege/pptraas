@@ -117,7 +117,7 @@ void destroy_data_streams()
   destroy_int_linked_list(last_large_change_z);
 }
 
-void add_accel_data_to_streams(AccelData *data, TextLayer *s_debug_layer)
+void add_accel_data_to_streams(AccelData *data, uint gesture_mode, TextLayer *s_debug_layer)
 {
   int16_t last_accel_x = get_last_node(accel_data_x)->data;
   int16_t last_accel_y = get_last_node(accel_data_y)->data;
@@ -248,6 +248,30 @@ IntNode* add_new_last_large_change(
   }
 }
 
-void check_to_send_next_request() { }
+void check_to_send_next_request()
+{
+  IntNode* last_last_large_change_x = get_last_node(last_large_change_x);
+  IntNode* last_last_large_change_y = get_last_node(last_large_change_y);
+  IntNode* last_last_large_change_z = get_last_node(last_large_change_z);
+  
+  if (// abs(last_last_large_change_z->data) > 0 && // NUM_SAMPLES &&
+      last_last_large_change_y->data == 1 && 
+      last_last_large_change_y->prev->data < -GESTURE_LENGTH_THRESHOLD)
+  {
+    send_next_request();
+  }
+}
 
-void check_to_send_prev_request() { }
+void check_to_send_prev_request()
+{
+  IntNode* last_last_large_change_x = get_last_node(last_large_change_x);
+  IntNode* last_last_large_change_y = get_last_node(last_large_change_y);
+  IntNode* last_last_large_change_z = get_last_node(last_large_change_z);
+  
+  if (// abs(last_last_large_change_z->data) > 0 && // NUM_SAMPLES &&
+      last_last_large_change_y->data == -1 && 
+      last_last_large_change_y->prev->data > GESTURE_LENGTH_THRESHOLD)
+  {
+    send_prev_request();
+  }
+}

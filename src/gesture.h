@@ -8,9 +8,9 @@
 
 #define abs(x) (x >= 0 ? x : -x)
 #define sgn(x) (x >= 0 ? 1 : -1)
-#define DIFFERENCE_THRESHOLD_X 50
-#define DIFFERENCE_THRESHOLD_Y 50
-#define DIFFERENCE_THRESHOLD_Z 50
+#define DIFFERENCE_THRESHOLD_X 200
+#define DIFFERENCE_THRESHOLD_Y 200
+#define DIFFERENCE_THRESHOLD_Z 200
 
 static uint gesture_mode = FALSE;
 
@@ -57,3 +57,8 @@ void add_accel_data_to_streams(AccelData*, TextLayer*);
 IntNode* add_new_moving_avg(IntNode*, int16_t, int16_t);
 IntNode* add_new_difference(IntNode*, int16_t, int16_t);
 IntNode* add_new_last_large_change(IntNode*, int16_t, int16_t, int16_t, IntNode*);
+
+void send_next_request();
+void send_prev_request();
+void check_to_send_next_request();
+void check_to_send_prev_request();

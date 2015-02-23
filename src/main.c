@@ -203,7 +203,7 @@ static TextLayer *s_status_layer;
 static TextLayer *s_readings_layer;
 static TextLayer *s_debug_layer;
 
-static void send_next_request()
+void send_next_request()
 {
   // Begin dictionary.
   DictionaryIterator *iter;
@@ -222,7 +222,7 @@ static void up_click_handler_nw(ClickRecognizerRef recognizer, void *context)
   send_next_request();
 }
 
-static void send_prev_request()
+void send_prev_request()
 {
   // Begin dictionary.
   DictionaryIterator *iter;

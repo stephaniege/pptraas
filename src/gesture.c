@@ -184,18 +184,34 @@ void add_accel_data_to_streams(AccelData *data, TextLayer *s_debug_layer)
       DIFFERENCE_THRESHOLD_Z,
       get_last_node(last_large_change_z));
     
+    IntNode* last_last_large_change_x = get_last_node(last_large_change_x);
+    IntNode* last_last_large_change_y = get_last_node(last_large_change_y);
+    IntNode* last_last_large_change_z = get_last_node(last_large_change_z);
+    static char infoMsg[128];
+    snprintf(infoMsg,
+             sizeof(infoMsg),
+             "LLC:\n%d, %d, %d\n%d, %d, %d\n%d, %d, %d",
+             last_last_large_change_x->data,
+             last_last_large_change_y->data,
+             last_last_large_change_z->data,
+             last_last_large_change_x->prev->data,
+             last_last_large_change_y->prev->data,
+             last_last_large_change_z->prev->data,
+             last_last_large_change_x->prev->prev->data,
+             last_last_large_change_y->prev->prev->data,
+             last_last_large_change_z->prev->prev->data);
+    text_layer_set_text(s_debug_layer, infoMsg);
+    
+    if (gesture_mode)
+    {
+      check_to_send_next_request();
+      check_to_send_prev_request();
+    }
+  
     last_accel_x = new_accel_x;
     last_accel_y = new_accel_y;
     last_accel_z = new_accel_z;
   }
-  
-  static char infoMsg[32];
-  snprintf(infoMsg, sizeof(infoMsg),
-           "LLC: %d, %d, %d",
-           get_last_node(last_large_change_x)->data,
-           get_last_node(last_large_change_y)->data,
-           get_last_node(last_large_change_z)->data);
-  text_layer_set_text(s_debug_layer, infoMsg);
 }
 
 IntNode* add_new_moving_avg(IntNode* stream, int16_t prev_data, int16_t new_data)
@@ -231,3 +247,7 @@ IntNode* add_new_last_large_change(
     );
   }
 }
+
+void check_to_send_next_request() { }
+
+void check_to_send_prev_request() { }

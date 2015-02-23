@@ -1,6 +1,7 @@
 import json
 import pusher
 
+from django.core.urlresolvers import reverse
 from django.template import RequestContext, loader
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponseRedirect, HttpResponse
@@ -54,15 +55,20 @@ def send_message_to_pusher(request, message):
 
 def next_slide(request):
     send_message_to_pusher(request, "next")
+    return HttpResponseRedirect('/raas/pair/') # redirect to buttons page -> when we redirect to buttons page, we know we are trying to connect to a valid channel. on the buttons page, we can then include the js for connecting to the pusher
+    #return HttpResponse(status=200)
 
 def previous_slide(request):
     send_message_to_pusher(request, "previous")
+    #return HttpResponse(status=200)
+    return HttpResponseRedirect('/raas/pair/') # redirect to buttons page -> when we redirect to buttons page, we know we are trying to connect to a valid channel. on the buttons page, we can then include the js for connecting to the pusher
 
 
 ##### END API METHODS
 
 
 # used by browser to connect to given channel
+@csrf_exempt
 def join_channel(request):
     if request.method == 'POST':
         response = request.POST
@@ -70,7 +76,7 @@ def join_channel(request):
             code = str(response[u'code1']) + str(response[u'code2']) + str(response[u'code3']) + str(response[u'code4']) 
             ##### TODO: Uncomment this for production
             #if code not in channels: # this channel is not open to a desktop presentation.
-            #    return HttpResponseRedirect('/raas/join/') # redirect to same page
+            #    return HttpResponseRedirect('/raas/pair/') # redirect to same page
             channels[get_client_ip(request)] = code
             return HttpResponseRedirect('/raas/buttons/') # redirect to buttons page -> when we redirect to buttons page, we know we are trying to connect to a valid channel. on the buttons page, we can then include the js for connecting to the pusher
     else:

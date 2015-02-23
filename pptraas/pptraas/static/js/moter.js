@@ -2,22 +2,21 @@ $(document).ready(function() {
 
     // Prevent the default navigation for the a.slide_button elements.
     // This is mostly here just for development, so feel free to comment out.
-    $('.slide_button').click(function(e){
-        e.preventDefault();
+    //$('.slide_button').click(function(e){
+    //    e.preventDefault();
 
-        var $this = $(this),
-            thisId = $this.attr('id');
+    //    var $this = $(this),
+    //        thisId = $this.attr('id');
 
-        switch (thisId) {
-            case 'slide_previous':
-                slideBack($this);
-                break;
-            case 'slide_next':
-                slideForward($this);
-                break;
-        }
-        
-    });
+    //    switch (thisId) {
+    //        case 'slide_previous':
+    //            slideBack($this);
+    //            break;
+    //        case 'slide_next':
+    //            slideForward($this);
+    //            break;
+    //    }
+    //});
 
     // Set focus to the first number (pops up the keyboard automatically on touch devices)
     $('.remote_code:first').focus();
@@ -54,15 +53,15 @@ $(document).ready(function() {
 
 
 function slideForward($this) {
-    //highlight($this);
+    highlight($this);
     console.log('forward!');
 }
 
 function slideBack($this) {
-    //highlight($this);
+    highlight($this);
     $('#event').text('back!');
 }
 
 function highlight($this) {
-    // $this.addClass('active');
+    $this.addClass('active');
 }

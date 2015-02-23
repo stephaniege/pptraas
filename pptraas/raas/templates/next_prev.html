@@ -13,15 +13,15 @@
         <div id="container">
             <div id="slide_controls_top">
                 <ul class="nolist" id="slide_controls_sidebyside">
-                    <li><a id="slide_previous" class="slide_button" href="#previous"><img src="/static/img/slide_previous.svg"></a></li>
-                    <li><a id="slide_next" class="slide_button active" href="#next"><img src="/static/img/slide_forward.svg"></a></li>
+                  <li><a id="slide_previous" class="slide_button" href="{% url "raas.views.previous_slide" %}"><img src="/static/img/slide_previous.svg"></a></li>
+                  <li><a id="slide_next" class="slide_button active" href="{% url "raas.views.next_slide" %}"><img src="/static/img/slide_forward.svg"></a></li>
                 </ul>
             </div>
 
-            <div id="slide_controls_bottom">
+            <!--<div id="slide_controls_bottom">
                 <a id="slideshow_stop" class="slide_button" href="#stop"><img src="/static/img/stop.svg"></a>
             </div>
-        </div>
+          </div> --!>
 
         <script type="text/javascript" src="/static/js/jquery-2.1.3.min.js"></script>
         <script type="text/javascript" src="/static/js/jquery.touchSwipe.min.js"></script>

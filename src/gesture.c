@@ -65,12 +65,12 @@ IntNode* get_last_node(IntNode* node)
 
 // Adds a new integer to the linked list.
 // Compensates by removing the first integer from the linked list.
-IntNode* add_to_int_linked_list(IntNode* node)
+IntNode* add_to_int_linked_list(IntNode* node, uint16_t data)
 {
   // Precondition: The linked list has at least one node.
   IntNode* last_node = get_last_node(node);
   IntNode* new_node = malloc(sizeof(IntNode));
-  new_node->data = 0;
+  new_node->data = data;
   new_node->next = 0;
   new_node->prev = last_node;
   last_node->next = new_node;
@@ -117,4 +117,14 @@ void destroy_data_streams()
   destroy_int_linked_list(last_large_change_x);
   destroy_int_linked_list(last_large_change_y);
   destroy_int_linked_list(last_large_change_z);
+}
+
+void add_accel_data_to_streams(AccelData *data)
+{
+  for (uint i = 0; i < NUM_SAMPLES; i++)
+  {
+    accel_data_x = add_to_int_linked_list(accel_data_x, data[i].x);
+    accel_data_y = add_to_int_linked_list(accel_data_y, data[i].y);
+    accel_data_z = add_to_int_linked_list(accel_data_z, data[i].z);
+  }
 }

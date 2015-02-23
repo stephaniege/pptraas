@@ -388,15 +388,18 @@ static void outbox_sent_callback(DictionaryIterator *iterator, void *context)
 
 static void data_handler(AccelData *data, uint32_t num_samples)
 {
+  // Add the data to the acceleration streams.
+  add_accel_data_to_streams(data);
+  
   // Long-lived buffer.
   static char s_buffer[128];
 
   // Compose string of all data
   snprintf(s_buffer, sizeof(s_buffer), 
     "N X,Y,Z\n0 %d,%d,%d\n1 %d,%d,%d\n2 %d,%d,%d", 
-    data[0].x, data[0].y, data[0].z, 
-    data[1].x, data[1].y, data[1].z, 
-    data[2].x, data[2].y, data[2].z
+    data[NUM_SAMPLES - 3].x, data[NUM_SAMPLES - 3].y, data[NUM_SAMPLES - 3].z, 
+    data[NUM_SAMPLES - 2].x, data[NUM_SAMPLES - 2].y, data[NUM_SAMPLES - 2].z, 
+    data[NUM_SAMPLES - 1].x, data[NUM_SAMPLES - 1].y, data[NUM_SAMPLES - 1].z
   );
 
   // Show the data.
@@ -444,11 +447,9 @@ static void init()
   init_data_streams(SIZE_OF_STREAM);
   
   // Subscribe to the accelerometer data service.
-  uint32_t num_samples = 3;
-  accel_data_service_subscribe(num_samples, data_handler);
-  
+  accel_data_service_subscribe(NUM_SAMPLES, data_handler);
   // Choose update rate.
-  accel_service_set_sampling_rate(ACCEL_SAMPLING_10HZ);
+  accel_service_set_sampling_rate(ACCEL_SAMPLING_25HZ);
   
 }
 

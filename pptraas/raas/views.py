@@ -55,13 +55,11 @@ def send_message_to_pusher(request, message):
 
 def next_slide(request):
     send_message_to_pusher(request, "next")
-    return HttpResponseRedirect('/raas/pair/') # redirect to buttons page -> when we redirect to buttons page, we know we are trying to connect to a valid channel. on the buttons page, we can then include the js for connecting to the pusher
-    #return HttpResponse(status=200)
+    return HttpResponse(status=200)
 
 def previous_slide(request):
     send_message_to_pusher(request, "previous")
-    #return HttpResponse(status=200)
-    return HttpResponseRedirect('/raas/pair/') # redirect to buttons page -> when we redirect to buttons page, we know we are trying to connect to a valid channel. on the buttons page, we can then include the js for connecting to the pusher
+    return HttpResponse(status=200)
 
 
 ##### END API METHODS

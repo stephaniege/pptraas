@@ -373,11 +373,13 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
         {
           APP_LOG(APP_LOG_LEVEL_INFO, "Next slide request was successful! :)");
           text_layer_set_text(s_status_layer, "Showing next slide.");
+          vibes_short_pulse();
         }
         else
         {
           APP_LOG(APP_LOG_LEVEL_INFO, "Next slide request was unsuccessful! :(");
           text_layer_set_text(s_status_layer, "Unable to show next slide.");
+          vibes_short_pulse();
         }
         break;
       case KEY_PREV_STATUS:
@@ -385,11 +387,13 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
         {
           APP_LOG(APP_LOG_LEVEL_INFO, "Previous slide request was successful! :)");
           text_layer_set_text(s_status_layer, "Showing previous slide.");
+          vibes_double_pulse();
         }
         else
         {
           APP_LOG(APP_LOG_LEVEL_INFO, "Previous slide request was unsuccessful! :(");
           text_layer_set_text(s_status_layer, "Unable to show previous slide.");
+          vibes_double_pulse();
         }
         break;
       default:
@@ -420,7 +424,7 @@ static void outbox_sent_callback(DictionaryIterator *iterator, void *context)
 static void data_handler(AccelData *data, uint32_t num_samples)
 {
   // Add the data to the acceleration streams.
-  add_accel_data_to_streams(data, s_readings_layer);
+  add_accel_data_to_streams(data, gesture_mode, s_readings_layer);
   
   // Long-lived buffer.
   static char s_buffer[128];

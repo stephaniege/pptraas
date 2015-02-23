@@ -5,6 +5,7 @@
 
 #define SIZE_OF_STREAM 50
 #define NUM_SAMPLES 25
+#define GESTURE_LENGTH_THRESHOLD 25
 
 #define abs(x) (x >= 0 ? x : -x)
 #define sgn(x) (x >= 0 ? 1 : -1)
@@ -53,7 +54,7 @@ static IntNode* last_large_change_z;
 void init_data_streams(uint);
 void destroy_data_streams();
 
-void add_accel_data_to_streams(AccelData*, TextLayer*);
+void add_accel_data_to_streams(AccelData*, uint, TextLayer*);
 IntNode* add_new_moving_avg(IntNode*, int16_t, int16_t);
 IntNode* add_new_difference(IntNode*, int16_t, int16_t);
 IntNode* add_new_last_large_change(IntNode*, int16_t, int16_t, int16_t, IntNode*);

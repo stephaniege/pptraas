@@ -36,10 +36,13 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
 )
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -90,6 +93,9 @@ STATICFILES_DIRS = (
 TEMPLATE_DIRS = (
         os.path.join(BASE_DIR, 'raas/templates'), 
         )
+
+# CORS Whitelist
+CORS_ORIGIN_ALLOW_ALL = True
 
 #### Stuff for Heroku
 

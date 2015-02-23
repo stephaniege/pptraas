@@ -13,8 +13,8 @@
         <div id="container">
             <div id="slide_controls_top">
                 <ul class="nolist" id="slide_controls_sidebyside">
-                  <li><a id="slide_previous" class="slide_button" href="{% url "raas.views.previous_slide" %}"><img src="/static/img/slide_previous.svg"></a></li>
-                  <li><a id="slide_next" class="slide_button active" href="{% url "raas.views.next_slide" %}"><img src="/static/img/slide_forward.svg"></a></li>
+                  <li><a id="slide_previous" class="slide_button" onClick="prevbuttonclick()"><img src="/static/img/slide_previous.svg"></a></li>
+                  <li><a id="slide_next" class="slide_button active" onClick="nextbuttonclick()"><img src="/static/img/slide_forward.svg"></a></li>
                 </ul>
             </div>
 

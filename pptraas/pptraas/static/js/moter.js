@@ -65,3 +65,17 @@ function slideBack($this) {
 function highlight($this) {
     $this.addClass('active');
 }
+
+function nextbuttonclick($this) {
+        $.get("/raas/next", function(data) {
+                console.log("next navigation success");
+                console.log("data: ", data)
+        });
+}
+
+function prevbuttonclick($this) {
+        $.get("/raas/previous", function(data) {
+                console.log("previous navigation success");
+                console.log("data: ", data)
+        });
+}

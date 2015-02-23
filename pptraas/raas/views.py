@@ -54,12 +54,10 @@ def send_message_to_pusher(request, message):
     return JsonResponse({'channel':channel})
 
 def next_slide(request):
-    send_message_to_pusher(request, "next")
-    return HttpResponse(status=200)
+    return send_message_to_pusher(request, "next")
 
 def previous_slide(request):
-    send_message_to_pusher(request, "previous")
-    return HttpResponse(status=200)
+    return send_message_to_pusher(request, "previous")
 
 
 ##### END API METHODS

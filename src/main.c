@@ -440,6 +440,9 @@ static void init()
   // Show the code Window on the watch, with `animated` set to `true`.
   window_stack_push(s_code_window, true);
   
+  // Set up data streams for the accelerometer.
+  init_data_streams(SIZE_OF_STREAM);
+  
   // Subscribe to the accelerometer data service.
   uint32_t num_samples = 3;
   accel_data_service_subscribe(num_samples, data_handler);
@@ -447,12 +450,13 @@ static void init()
   // Choose update rate.
   accel_service_set_sampling_rate(ACCEL_SAMPLING_10HZ);
   
-  IntNode *test = init_int_linked_list((uint)num_samples);
-  destroy_int_linked_list(test);
 }
 
 static void deinit()
 {
+  // Destroy data streams for the accelerometer.
+  destroy_data_streams();
+  
   // Destroy Window.
   window_destroy(s_code_window);
 }

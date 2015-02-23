@@ -49,3 +49,4 @@ void destroy_data_streams();
 
 void add_accel_data_to_streams(AccelData*, TextLayer*);
 IntNode* add_new_moving_avg(IntNode*, int16_t, int16_t);
+IntNode* add_new_difference(IntNode*, int16_t, int16_t);

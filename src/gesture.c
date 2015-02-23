@@ -140,6 +140,25 @@ void add_accel_data_to_streams(AccelData *data, TextLayer *s_debug_layer)
     moving_avg_data_y = add_new_moving_avg(moving_avg_data_y, last_accel_y, new_accel_y);
     moving_avg_data_z = add_new_moving_avg(moving_avg_data_z, last_accel_z, new_accel_z);
     
+    // Find the difference in the moving average along each direction,
+    // and add that information to the difference streams.
+    IntNode* last_moving_avg_data_x = get_last_node(moving_avg_data_x);
+    IntNode* last_moving_avg_data_y = get_last_node(moving_avg_data_y);
+    IntNode* last_moving_avg_data_z = get_last_node(moving_avg_data_z);
+    
+    difference_data_x = add_new_difference(
+      difference_data_x,
+      last_moving_avg_data_x->prev->data,
+      last_moving_avg_data_x->data);
+    difference_data_y = add_new_difference(
+      difference_data_y,
+      last_moving_avg_data_y->prev->data,
+      last_moving_avg_data_y->data);
+    difference_data_z = add_new_difference(
+      difference_data_z,
+      last_moving_avg_data_z->prev->data,
+      last_moving_avg_data_z->data);
+    
     last_accel_x = new_accel_x;
     last_accel_y = new_accel_y;
     last_accel_z = new_accel_z;
@@ -147,10 +166,10 @@ void add_accel_data_to_streams(AccelData *data, TextLayer *s_debug_layer)
   
   static char infoMsg[32];
   snprintf(infoMsg, sizeof(infoMsg),
-           "Moving average: %d, %d, %d",
-          get_last_node(moving_avg_data_x)->data,
-          get_last_node(moving_avg_data_y)->data,
-          get_last_node(moving_avg_data_z)->data);
+           "Difference: %d, %d, %d",
+          get_last_node(difference_data_x)->data,
+          get_last_node(difference_data_y)->data,
+          get_last_node(difference_data_z)->data);
   text_layer_set_text(s_debug_layer, infoMsg);
 }
 
@@ -158,4 +177,10 @@ IntNode* add_new_moving_avg(IntNode* stream, int16_t prev_data, int16_t new_data
 {
   int16_t new_moving_avg = (int16_t)((prev_data + new_data) / 2);
   return add_to_int_linked_list(stream, new_moving_avg);
+}
+
+IntNode* add_new_difference(IntNode* stream, int16_t prev_data, int16_t new_data)
+{
+  int16_t new_difference = new_data - prev_data;
+  return add_to_int_linked_list(stream, new_difference);
 }

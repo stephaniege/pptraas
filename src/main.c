@@ -201,6 +201,7 @@ static GBitmap *s_prev_bitmap;
 static ActionBarLayer *s_actionbar_layer;
 static TextLayer *s_status_layer;
 static TextLayer *s_readings_layer;
+static TextLayer *s_debug_layer;
 
 static void send_next_request()
 {
@@ -274,7 +275,8 @@ static void init_button_layers(Window *window)
 
 static void init_text_layers_nw(Window *window)
 {
-  s_status_layer = text_layer_create(GRect(0, 20, 120, 100));
+  // Create a layer to show the status of requests or the gesture mode.
+  s_status_layer = text_layer_create(GRect(0, 0, 120, 100));
   text_layer_set_text_color(s_status_layer, GColorBlack);
   text_layer_set_text(s_status_layer, "No request sent.");
   text_layer_set_overflow_mode(s_status_layer, GTextOverflowModeWordWrap);
@@ -285,7 +287,8 @@ static void init_text_layers_nw(Window *window)
   // Add it as a child layer to the Window's root layer.
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_status_layer));
   
-  s_readings_layer = text_layer_create(GRect(0, 50, 120, 100));
+  // Create a layer to show accelerometer readings.
+  s_readings_layer = text_layer_create(GRect(0, 40, 120, 100));
   text_layer_set_text_color(s_readings_layer, GColorBlack);
   text_layer_set_overflow_mode(s_readings_layer, GTextOverflowModeWordWrap);
   text_layer_set_font(s_readings_layer, fonts_get_system_font(FONT_KEY_GOTHIC_18));
@@ -293,6 +296,16 @@ static void init_text_layers_nw(Window *window)
     
   // Add it as a child layer to the Window's root layer.
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_readings_layer));
+  
+  // Create a layer to show debugging information.
+  s_debug_layer = text_layer_create(GRect(0, 80, 120, 100));
+  text_layer_set_text_color(s_debug_layer, GColorBlack);
+  text_layer_set_overflow_mode(s_debug_layer, GTextOverflowModeWordWrap);
+  text_layer_set_font(s_debug_layer, fonts_get_system_font(FONT_KEY_GOTHIC_18));
+  text_layer_set_text_alignment(s_debug_layer, GTextAlignmentCenter);
+    
+  // Add it as a child layer to the Window's root layer.
+  layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_debug_layer));
 }
 
 static void destroy_button_layers(Window *window)
@@ -306,6 +319,7 @@ static void destroy_text_layers_nw(Window *window)
 {
   text_layer_destroy(s_status_layer);
   text_layer_destroy(s_readings_layer);
+  text_layer_destroy(s_debug_layer);
 }
 
 static void navigation_window_load(Window *window)
@@ -412,14 +426,14 @@ static void data_handler(AccelData *data, uint32_t num_samples)
   static char s_buffer[128];
 
   // Compose string of all data
-  /* snprintf(s_buffer, sizeof(s_buffer), 
-    "N X,Y,Z\n0 %d,%d,%d\n1 %d,%d,%d\n2 %d,%d,%d", 
+  snprintf(s_buffer, sizeof(s_buffer), 
+    "0 %d,%d,%d\n1 %d,%d,%d\n2 %d,%d,%d", 
     data[NUM_SAMPLES - 3].x, data[NUM_SAMPLES - 3].y, data[NUM_SAMPLES - 3].z, 
     data[NUM_SAMPLES - 2].x, data[NUM_SAMPLES - 2].y, data[NUM_SAMPLES - 2].z, 
     data[NUM_SAMPLES - 1].x, data[NUM_SAMPLES - 1].y, data[NUM_SAMPLES - 1].z
-  ); */
+  );
   // Show the data.
-  // text_layer_set_text(s_readings_layer, s_buffer);
+  text_layer_set_text(s_debug_layer, s_buffer);
 }
 
 static void init()

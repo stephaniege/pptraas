@@ -159,6 +159,31 @@ void add_accel_data_to_streams(AccelData *data, TextLayer *s_debug_layer)
       last_moving_avg_data_z->prev->data,
       last_moving_avg_data_z->data);
     
+    // Find the number of samples since the last large change, and add
+    // that information to the streams that keep track of the last large change.
+    IntNode* last_difference_data_x = get_last_node(difference_data_x);
+    IntNode* last_difference_data_y = get_last_node(difference_data_y);
+    IntNode* last_difference_data_z = get_last_node(difference_data_z);
+    
+    last_large_change_x = add_new_last_large_change(
+      last_large_change_x,
+      last_difference_data_x->prev->data,
+      last_difference_data_x->data,
+      DIFFERENCE_THRESHOLD_X,
+      get_last_node(last_large_change_x));
+    last_large_change_y = add_new_last_large_change(
+      last_large_change_y,
+      last_difference_data_y->prev->data,
+      last_difference_data_y->data,
+      DIFFERENCE_THRESHOLD_Y,
+      get_last_node(last_large_change_y));
+    last_large_change_z = add_new_last_large_change(
+      last_large_change_z,
+      last_difference_data_z->prev->data,
+      last_difference_data_z->data,
+      DIFFERENCE_THRESHOLD_Z,
+      get_last_node(last_large_change_z));
+    
     last_accel_x = new_accel_x;
     last_accel_y = new_accel_y;
     last_accel_z = new_accel_z;
@@ -166,10 +191,10 @@ void add_accel_data_to_streams(AccelData *data, TextLayer *s_debug_layer)
   
   static char infoMsg[32];
   snprintf(infoMsg, sizeof(infoMsg),
-           "Difference: %d, %d, %d",
-          get_last_node(difference_data_x)->data,
-          get_last_node(difference_data_y)->data,
-          get_last_node(difference_data_z)->data);
+           "LLC: %d, %d, %d",
+           get_last_node(last_large_change_x)->data,
+           get_last_node(last_large_change_y)->data,
+           get_last_node(last_large_change_z)->data);
   text_layer_set_text(s_debug_layer, infoMsg);
 }
 
@@ -183,4 +208,26 @@ IntNode* add_new_difference(IntNode* stream, int16_t prev_data, int16_t new_data
 {
   int16_t new_difference = new_data - prev_data;
   return add_to_int_linked_list(stream, new_difference);
+}
+
+IntNode* add_new_last_large_change(
+  IntNode* stream,
+  int16_t prev_data,
+  int16_t new_data,
+  int16_t threshold,
+  IntNode* last_node
+)
+{
+  int16_t difference = new_data - prev_data;
+  if (abs(difference) > threshold)
+  {
+    return add_to_int_linked_list(stream, sgn(difference));
+  }
+  else
+  {
+    return add_to_int_linked_list(
+      stream,
+      last_node->data + (sgn(last_node->data) * 1)
+    );
+  }
 }

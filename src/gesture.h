@@ -1,8 +1,12 @@
 #pragma once
 
+#define FALSE 0
+#define TRUE 1
+
 #define SIZE_OF_STREAM 50
 #define NUM_SAMPLES 25
-#define GESTURE_MODE FALSE
+
+static uint gesture_mode = FALSE;
 
 struct IntNode
 {

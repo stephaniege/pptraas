@@ -1,9 +1,6 @@
 #include <pebble.h>
 #include "gesture.h"
 
-#define FALSE 0
-#define TRUE 1
-
 #define KEY_PAIRING_CODE_DIGIT1 0
 #define KEY_PAIRING_CODE_DIGIT2 1
 #define KEY_PAIRING_CODE_DIGIT3 2
@@ -203,6 +200,7 @@ static GBitmap *s_next_bitmap;
 static GBitmap *s_prev_bitmap;
 static ActionBarLayer *s_actionbar_layer;
 static TextLayer *s_status_layer;
+static TextLayer *s_readings_layer;
 
 static void send_next_request()
 {
@@ -242,11 +240,20 @@ static void down_click_handler_nw(ClickRecognizerRef recognizer, void *context)
   send_prev_request();
 }
 
+static void select_click_handler_nw(ClickRecognizerRef recognizer, void *context)
+{
+  // Toggle the gesture recognition mode.
+  gesture_mode = gesture_mode ? FALSE : TRUE;
+  if (gesture_mode) { text_layer_set_text(s_status_layer, "Gesture mode ON."); }
+  else { text_layer_set_text(s_status_layer, "Gesture mode OFF."); }
+}
+
 static void click_config_provider_nw(void *context)
 {
   // Register the ClickHandlers.
   window_single_click_subscribe(BUTTON_ID_UP, up_click_handler_nw);
   window_single_click_subscribe(BUTTON_ID_DOWN, down_click_handler_nw);
+  window_single_click_subscribe(BUTTON_ID_SELECT, select_click_handler_nw);
 }
 
 static void init_button_layers(Window *window)
@@ -265,7 +272,7 @@ static void init_button_layers(Window *window)
   action_bar_layer_set_click_config_provider(s_actionbar_layer, click_config_provider_nw);
 }
 
-static void init_status_layer(Window *window)
+static void init_text_layers_nw(Window *window)
 {
   s_status_layer = text_layer_create(GRect(0, 20, 120, 100));
   text_layer_set_text_color(s_status_layer, GColorBlack);
@@ -277,6 +284,15 @@ static void init_status_layer(Window *window)
     
   // Add it as a child layer to the Window's root layer.
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_status_layer));
+  
+  s_readings_layer = text_layer_create(GRect(0, 50, 120, 100));
+  text_layer_set_text_color(s_readings_layer, GColorBlack);
+  text_layer_set_overflow_mode(s_readings_layer, GTextOverflowModeWordWrap);
+  text_layer_set_font(s_readings_layer, fonts_get_system_font(FONT_KEY_GOTHIC_18));
+  text_layer_set_text_alignment(s_readings_layer, GTextAlignmentCenter);
+    
+  // Add it as a child layer to the Window's root layer.
+  layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_readings_layer));
 }
 
 static void destroy_button_layers(Window *window)
@@ -286,21 +302,22 @@ static void destroy_button_layers(Window *window)
   action_bar_layer_destroy(s_actionbar_layer);
 }
 
-static void destroy_status_layer(Window *window)
+static void destroy_text_layers_nw(Window *window)
 {
   text_layer_destroy(s_status_layer);
+  text_layer_destroy(s_readings_layer);
 }
 
 static void navigation_window_load(Window *window)
 {
   init_button_layers(window);
-  init_status_layer(window);
+  init_text_layers_nw(window);
 }
 
 static void navigation_window_unload(Window *window)
 {
   destroy_button_layers(window);
-  destroy_status_layer(window);
+  destroy_text_layers_nw(window);
 }
 
 static void inbox_received_callback(DictionaryIterator *iterator, void *context)
@@ -403,7 +420,7 @@ static void data_handler(AccelData *data, uint32_t num_samples)
   );
 
   // Show the data.
-  text_layer_set_text(s_status_layer, s_buffer);
+  text_layer_set_text(s_readings_layer, s_buffer);
 }
 
 static void init()
